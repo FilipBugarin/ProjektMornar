@@ -1,6 +1,6 @@
 package hr.fer.repository;
 
-import hr.fer.entity.auth.User;
+import hr.fer.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {

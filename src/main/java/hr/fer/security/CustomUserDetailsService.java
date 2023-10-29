@@ -9,10 +9,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import hr.fer.entity.auth.User;
+import hr.fer.entity.User;
 
-import javax.swing.text.html.Option;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service

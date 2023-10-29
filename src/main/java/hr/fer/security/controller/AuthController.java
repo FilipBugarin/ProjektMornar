@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import hr.fer.entity.auth.User;
+import hr.fer.entity.User;
 import hr.fer.security.CurrentUser;
 import hr.fer.security.CustomUserDetailsService;
 import hr.fer.security.JwtAuthenticationResponse;

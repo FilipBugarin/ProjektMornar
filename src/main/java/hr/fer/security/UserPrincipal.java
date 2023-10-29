@@ -1,10 +1,9 @@
 package hr.fer.security;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import hr.fer.entity.auth.User;
+import hr.fer.entity.User;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,5 +1,6 @@
-package hr.fer.entity.auth;
+package hr.fer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -19,6 +20,7 @@ public class User{
     private String name;
     private String username;
     private String email;
+    @JsonIgnore
     private String password;
     
 }
