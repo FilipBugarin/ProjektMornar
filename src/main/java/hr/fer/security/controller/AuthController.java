@@ -62,7 +62,7 @@ public class AuthController {
 
         User user = service.getUserById(tokenProvider.getUserIdFromJWT(jwt));
 
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, user.getId(), null, user.getName(), user.getEmail(), null));
+        return ResponseEntity.ok(JwtAuthenticationResponse.builder().accessToken(jwt).id(user.getId()).name(user.getName()).email(user.getEmail()).build());
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -135,7 +135,7 @@ public class AuthController {
 
         user = service.getUserById(tokenProvider.getUserIdFromJWT(jwt));
 
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, user.getId(), null, user.getName(), user.getEmail(), null));
+        return ResponseEntity.ok(JwtAuthenticationResponse.builder().accessToken(jwt).id(user.getId()).name(user.getName()).email(user.getEmail()).build());
     }
 
 }
