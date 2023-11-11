@@ -1,5 +1,6 @@
 package hr.fer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,8 +22,9 @@ public class Question {
     private Long id;
 
     private String questionString;
-    private boolean isRandomOrder;
+    private boolean randomOrder;
 
+    @JsonIgnore
     @ManyToOne
     private Quiz quiz;
 

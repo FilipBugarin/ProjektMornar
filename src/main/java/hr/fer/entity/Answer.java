@@ -1,5 +1,6 @@
 package hr.fer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,10 +22,11 @@ public class Answer {
 
     private String answerText;
 
-    private boolean isCorrect;
+    private boolean correct;
 
-    private boolean isSelected;
+    private boolean selected;
 
+    @JsonIgnore
     @ManyToOne
     private Question question;
 }

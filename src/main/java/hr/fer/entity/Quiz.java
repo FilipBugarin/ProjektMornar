@@ -21,10 +21,10 @@ public class Quiz {
     private Long id;
 
     private String quizName;
-    private boolean isPrivate;
+    private boolean privateQuiz;
     private String description;
-    private boolean isMasterQuiz;
-    private boolean isRandomOrder;
+    private boolean masterQuiz;
+    private boolean randomOrder;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Question> questionList;
