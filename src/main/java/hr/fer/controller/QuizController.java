@@ -1,6 +1,7 @@
 package hr.fer.controller;
 
 import hr.fer.entity.Quiz;
+import hr.fer.request_response.CreateQuizCopy;
 import hr.fer.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,5 +30,20 @@ public class QuizController {
             return ResponseEntity.ok(false);
         }
 
+    }
+
+    @PostMapping("create_copy")
+    public ResponseEntity<Boolean> createQuizCopy(@RequestBody CreateQuizCopy quizCopy){
+        if(quizService.createQuizCopy(quizCopy)){
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.ok(false);
+        }
+
+    }
+
+    @GetMapping("copies")
+    public ResponseEntity<List<Quiz>> getCopies(){
+        return ResponseEntity.ok(quizService.getCopies());
     }
 }

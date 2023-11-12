@@ -29,4 +29,13 @@ public class Answer {
     @JsonIgnore
     @ManyToOne
     private Question question;
+
+    //copy constructor
+    public Answer(Answer copy, Question q){
+        this.id= copy.getId();
+        this.answerText = copy.getAnswerText();
+        this.correct = copy.isCorrect();
+        this.selected = copy.isSelected();
+        this.question = q;
+    }
 }

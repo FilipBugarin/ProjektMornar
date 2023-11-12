@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -34,4 +35,22 @@ public class Quiz {
 
     @ManyToOne
     private User createdBy;
+
+    //copy constructor
+    public Quiz(Quiz copy, User takenBy){
+        this.id = null;
+        this.quizName = copy.getQuizName();
+        this.privateQuiz = copy.isPrivateQuiz();
+        this.description = copy.getDescription();
+        this.masterQuiz = false;
+        this.randomOrder = copy.isRandomOrder();
+        this.takenBy = takenBy;
+        this.createdBy = copy.getCreatedBy();
+
+        List<Question> list = new ArrayList<>();
+        for(Question q: copy.getQuestionList()){
+            list.add(new Question(q, this));
+        }
+        this.questionList = list;
+    }
 }

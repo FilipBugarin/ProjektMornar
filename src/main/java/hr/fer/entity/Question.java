@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -30,4 +31,18 @@ public class Question {
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Answer> answerList;
+
+    //copy constructor
+    public Question(Question copy, Quiz q){
+        this.id = copy.getId();
+        this.questionString = copy.getQuestionString();
+        this.randomOrder = copy.isRandomOrder();
+        this.quiz = q;
+
+        List<Answer> list = new ArrayList<Answer>();
+        for(Answer a: copy.getAnswerList()){
+            list.add(new Answer(a, this));
+        }
+        this.answerList = list;
+    }
 }
