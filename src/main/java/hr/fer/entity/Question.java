@@ -30,4 +30,8 @@ public class Question {
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Answer> answerList;
+
+    public Question(Question that){
+        this(that.getId(),that.getQuestionString(),that.isRandomOrder(),that.getQuiz(),that.getAnswerList());
+    }
 }
