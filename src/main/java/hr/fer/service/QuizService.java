@@ -3,8 +3,10 @@ package hr.fer.service;
 import hr.fer.entity.Answer;
 import hr.fer.entity.Question;
 import hr.fer.entity.Quiz;
+import hr.fer.entity.User;
 import hr.fer.repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -82,5 +84,9 @@ public class QuizService {
         } else {
             return false;
         }
+    }
+
+    public List<Quiz> getQuizzesByuser(User user) {
+        return quizRepository.findAllByTakenBy(user);
     }
 }
