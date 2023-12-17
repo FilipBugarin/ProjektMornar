@@ -34,4 +34,8 @@ public class Quiz {
 
     @ManyToOne
     private User createdBy;
+
+    public Quiz(Quiz that) {
+        this(that.getId(), that.getQuizName(), that.isPrivateQuiz(), that.getDescription(), that.isMasterQuiz(), that.isRandomOrder(), that.getQuestionList(), that.getTakenBy(), that.getCreatedBy());
+    }
 }
