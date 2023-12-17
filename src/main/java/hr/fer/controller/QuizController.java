@@ -41,8 +41,8 @@ public class QuizController {
     }
 
     @PostMapping("create/copy")
-    public ResponseEntity<Quiz> createQuizCopy(@RequestParam Long masterQuizId){
-        return ResponseEntity.ok(quizService.createQuizCopy(masterQuizId));
+    public ResponseEntity<Quiz> createQuizCopy(@RequestParam Long masterQuizId, @CurrentUser UserPrincipal user){
+        return ResponseEntity.ok(quizService.createQuizCopy(masterQuizId, userService.getUserById(user.getId())));
     }
     
     @PutMapping("update")

@@ -35,11 +35,12 @@ public class QuizService {
         return savedQuiz.getId() != null;
     }
 
-    public Quiz createQuizCopy(Long masterQuizId) {
+    public Quiz createQuizCopy(Long masterQuizId, User takenBy) {
         Quiz masterQuizToCopy = quizRepository.getById(masterQuizId);
         Quiz newQuiz = new Quiz(masterQuizToCopy);
         newQuiz.setId(null);
         newQuiz.setMasterQuiz(false);
+        newQuiz.setTakenBy(takenBy);
         List<Question> newQuestionList = new ArrayList<>();
         for(Question q:newQuiz.getQuestionList()){
             Question newQ = new Question(q);
