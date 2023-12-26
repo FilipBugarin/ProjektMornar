@@ -2,6 +2,7 @@ package hr.fer.controller;
 
 import hr.fer.entity.Quiz;
 import hr.fer.entity.User;
+import hr.fer.requests_responses.SolvedQuizStats;
 import hr.fer.security.CurrentUser;
 import hr.fer.security.CustomUserDetailsService;
 import hr.fer.security.UserPrincipal;
@@ -70,5 +71,15 @@ public class QuizController {
     @GetMapping("taken/by/user")
     public ResponseEntity<List<Quiz>> getPersonsQuizes(@CurrentUser UserPrincipal user){
         return new ResponseEntity<>(quizService.getQuizzesByuser(userService.getUserById(user.getId())), HttpStatus.OK);
+    }
+    
+    @GetMapping("solved/{id}")
+    public ResponseEntity<SolvedQuizStats> getSolvedQuizStats(@PathVariable("id") Long id) {
+    	SolvedQuizStats stats = quizService.getSolvedQuizStats(id);
+    	if(stats != null){
+            return new ResponseEntity<>(stats, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

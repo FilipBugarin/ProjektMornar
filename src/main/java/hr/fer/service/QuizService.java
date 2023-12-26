@@ -4,7 +4,12 @@ import hr.fer.entity.Answer;
 import hr.fer.entity.Question;
 import hr.fer.entity.Quiz;
 import hr.fer.entity.User;
+import hr.fer.repository.AnswerRepository;
+import hr.fer.repository.QuestionRepository;
 import hr.fer.repository.QuizRepository;
+import hr.fer.requests_responses.SolvedQuizQuestion;
+import hr.fer.requests_responses.SolvedQuizStats;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,12 +17,19 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class QuizService {
 
     @Autowired
     private QuizRepository quizRepository;
+    
+    @Autowired
+    private QuestionRepository questionRepository;
+    
+    @Autowired
+    private AnswerRepository answerRepository;
 
     public List<Quiz> getMasterQuizzes(){
         return quizRepository.findAllByMasterQuiz(true);
@@ -69,8 +81,32 @@ public class QuizService {
             existingQuiz.setMasterQuiz(quiz.isMasterQuiz());
             existingQuiz.setPrivateQuiz(quiz.isPrivateQuiz());
             existingQuiz.setQuestionList(quiz.getQuestionList());
+            
+            //Delete questions or answers that no longer belong
+            List<Question> oldQuestions = questionRepository.findAllByQuiz(existingQuiz);
+            for(Question question : oldQuestions) {
+            	boolean questionExistsInUpdated = quiz.getQuestionList().stream().anyMatch((q) -> q.getId() == question.getId());
+            	if(!questionExistsInUpdated) {
+            		question.setQuiz(null);
+            		continue;
+            	}
+            	
+            	Optional<Question> newQuestion = quiz.getQuestionList().stream().filter((q) -> q.getId() == question.getId()).findFirst();
+            	//Problem if not found
+            	if(!newQuestion.isPresent()) return false;
+            	
+            	List<Answer> oldAnswers = answerRepository.findAllByQuestion(question);
+            	List<Answer> newAnswers = newQuestion.get().getAnswerList();
+            	for(Answer answer : oldAnswers) {
+            		boolean answerExistsInUpdated = newAnswers.stream().anyMatch((a) -> a.getId() == answer.getId());
+            		if(!answerExistsInUpdated) {
+            			answer.setQuestion(null);
+            		}
+            	}
+            }
+            
             for (Question q : quiz.getQuestionList()) {
-                q.setQuiz(quiz);
+                q.setQuiz(existingQuiz);
                 for (Answer a : q.getAnswerList()) {
                     a.setQuestion(q);
                 }
@@ -89,5 +125,44 @@ public class QuizService {
 
     public List<Quiz> getQuizzesByuser(User user) {
         return quizRepository.findAllByTakenBy(user);
+    }
+    
+    public SolvedQuizStats getSolvedQuizStats(Long id) {
+    	
+    	Optional<Quiz> quizOpt = quizRepository.findById(id);
+    	if(!quizOpt.isPresent()) return null;
+    	
+    	Quiz quiz = quizOpt.get();
+    	SolvedQuizStats stats = new SolvedQuizStats();
+    	List<SolvedQuizQuestion> solvedQuestions = new ArrayList<>();
+    	
+    	stats.setQuizName(quiz.getQuizName());
+    	
+    	//Calculate score and fill solvedQuestions list
+    	List<Question> questions = questionRepository.findAllByQuiz(quiz);
+		double correctQuestions = 0;
+		for(Question question : questions) {
+			List<Answer> answers = answerRepository.findAllByQuestion(question);
+			
+			SolvedQuizQuestion solvedQuestion = new SolvedQuizQuestion();
+			solvedQuestion.setQuestionString(question.getQuestionString());
+			solvedQuestion.setCorrect(false);
+			solvedQuestion.setCorrectAnswers(answers.stream().filter((a) -> a.isCorrect()).map((a) -> a.getAnswerText()).collect(Collectors.toList()));
+			solvedQuestion.setSelectedAnswers(answers.stream().filter((a) -> a.isSelected()).map((a) -> a.getAnswerText()).collect(Collectors.toList()));
+			
+			//All answers that are correct must be selected for the question to be correct
+			boolean correct = answers.stream().filter((a) -> a.isCorrect()).allMatch((a) -> a.isSelected());
+			if(correct) {
+				correctQuestions++;
+				solvedQuestion.setCorrect(true);
+			}
+			
+			solvedQuestions.add(solvedQuestion);
+		}
+		double score = correctQuestions / questions.size();
+		stats.setQuestions(solvedQuestions);
+		stats.setScore(score);
+    	
+    	return stats;
     }
 }
