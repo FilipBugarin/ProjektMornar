@@ -28,6 +28,12 @@ public class QuizController {
     @Autowired
     private CustomUserDetailsService userService;
 
+
+    @GetMapping("search")
+    public ResponseEntity<List<Quiz>> getQuizListBySearchParam(@RequestParam String searchParam){
+        return ResponseEntity.ok(quizService.getMasterQuizzesBySearchParam(searchParam));
+    }
+
     @GetMapping
     public ResponseEntity<QuizInfo> getInfoForQuizPage(@RequestParam Long masterQuizId) {
         return ResponseEntity.ok(quizService.getQuizInfo(masterQuizId));

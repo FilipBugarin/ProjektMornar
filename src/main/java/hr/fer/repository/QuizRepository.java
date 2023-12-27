@@ -20,4 +20,7 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
     @Query("SELECT COUNT(q) FROM Quiz q WHERE q.masterQuizObject IS NOT NULL AND q.finished = true AND q.masterQuizObject.id = :quizId")
     long countFinishedQuizzesWithMasterCopy(@Param("quizId") Long quizId);
 
+    @Query("SELECT q FROM Quiz q WHERE q.masterQuiz = true AND (LOWER(q.quizName) LIKE LOWER(CONCAT('%', :term, '%')) OR LOWER(q.description) LIKE LOWER(CONCAT('%', :term, '%')))")
+    List<Quiz> searchMasterQuizzesByNameOrDescription(@Param("term") String term);
+
 }

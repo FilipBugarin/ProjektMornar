@@ -196,4 +196,8 @@ public class QuizService {
             return null;
         }
     }
+
+    public List<Quiz> getMasterQuizzesBySearchParam(String searchParam) {
+        return quizRepository.searchMasterQuizzesByNameOrDescription(searchParam);
+    }
 }
