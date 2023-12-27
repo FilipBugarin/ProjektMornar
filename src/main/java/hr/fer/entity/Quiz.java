@@ -1,5 +1,6 @@
 package hr.fer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,13 @@ public class Quiz {
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Question> questionList;
 
+    @JsonIgnore
+    @ManyToOne
+    private Quiz MasterQuizObject;
+
+    @ManyToOne
+    private QuizCategory category;
+
     @ManyToOne
     private User takenBy;
 
@@ -36,6 +44,6 @@ public class Quiz {
     private User createdBy;
 
     public Quiz(Quiz that) {
-        this(that.getId(), that.getQuizName(), that.isPrivateQuiz(), that.getDescription(), that.isMasterQuiz(), that.isRandomOrder(), that.getQuestionList(), that.getTakenBy(), that.getCreatedBy());
+        this(that.getId(), that.getQuizName(), that.isPrivateQuiz(), that.getDescription(), that.isMasterQuiz(), that.isRandomOrder(), that.getQuestionList(), that.getMasterQuizObject(), that.getCategory(), that.getTakenBy(), that.getCreatedBy());
     }
 }
