@@ -3,6 +3,7 @@ package hr.fer.controller;
 import hr.fer.entity.Quiz;
 import hr.fer.entity.QuizCategory;
 import hr.fer.entity.User;
+import hr.fer.requests_responses.QuizInfo;
 import hr.fer.requests_responses.SolvedQuizStats;
 import hr.fer.security.CurrentUser;
 import hr.fer.security.CustomUserDetailsService;
@@ -26,6 +27,11 @@ public class QuizController {
 
     @Autowired
     private CustomUserDetailsService userService;
+
+    @GetMapping
+    public ResponseEntity<QuizInfo> getInfoForQuizPage(@RequestParam Long masterQuizId) {
+        return ResponseEntity.ok(quizService.getQuizInfo(masterQuizId));
+    }
 
     @GetMapping("categories")
     public ResponseEntity<List<QuizCategory>> getAllQuizCategories() {

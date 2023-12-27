@@ -5,10 +5,12 @@ import hr.fer.repository.AnswerRepository;
 import hr.fer.repository.QuestionRepository;
 import hr.fer.repository.QuizCategoryRepository;
 import hr.fer.repository.QuizRepository;
+import hr.fer.requests_responses.QuizInfo;
 import hr.fer.requests_responses.SolvedQuizQuestion;
 import hr.fer.requests_responses.SolvedQuizStats;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ public class QuizService {
 
     public boolean createQuiz(Quiz quiz) {
         quiz.setMasterQuiz(true);
+        quiz.setFinished(false);
         for (Question q : quiz.getQuestionList()) {
             q.setQuiz(quiz);
             for (Answer a : q.getAnswerList()) {
@@ -83,6 +86,7 @@ public class QuizService {
             existingQuiz.setMasterQuiz(quiz.isMasterQuiz());
             existingQuiz.setPrivateQuiz(quiz.isPrivateQuiz());
             existingQuiz.setQuestionList(quiz.getQuestionList());
+            existingQuiz.setFinished(quiz.isFinished());
 
             //Delete questions or answers that no longer belong
             List<Question> oldQuestions = questionRepository.findAllByQuiz(existingQuiz);
@@ -175,5 +179,21 @@ public class QuizService {
     public boolean addQuizCategory(QuizCategory category) {
         quizCategoryRepository.save(category);
         return true;
+    }
+
+    public QuizInfo getQuizInfo(Long masterQuizId) {
+        Optional<Quiz> optQuiz = quizRepository.findById(masterQuizId);
+        if (optQuiz.isPresent()) {
+            Quiz q = optQuiz.get();
+            QuizInfo quizInfo = new QuizInfo();
+            quizInfo.setQuizName(q.getQuizName());
+            quizInfo.setQuizDescription(q.getDescription());
+            quizInfo.setCreatedBy(q.getCreatedBy());
+            quizInfo.setNumOfAttempts(quizRepository.countQuizzesWithMasterCopy(masterQuizId));
+            quizInfo.setNumOfFinished(quizRepository.countFinishedQuizzesWithMasterCopy(masterQuizId));
+            return quizInfo;
+        } else {
+            return null;
+        }
     }
 }

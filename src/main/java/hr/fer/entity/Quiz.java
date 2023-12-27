@@ -26,13 +26,14 @@ public class Quiz {
     private String description;
     private boolean masterQuiz;
     private boolean randomOrder;
+    private boolean finished;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Question> questionList;
 
     @JsonIgnore
     @ManyToOne
-    private Quiz MasterQuizObject;
+    private Quiz masterQuizObject;
 
     @ManyToOne
     private QuizCategory category;
@@ -44,6 +45,6 @@ public class Quiz {
     private User createdBy;
 
     public Quiz(Quiz that) {
-        this(that.getId(), that.getQuizName(), that.isPrivateQuiz(), that.getDescription(), that.isMasterQuiz(), that.isRandomOrder(), that.getQuestionList(), that.getMasterQuizObject(), that.getCategory(), that.getTakenBy(), that.getCreatedBy());
+        this(that.getId(), that.getQuizName(), that.isPrivateQuiz(), that.getDescription(), that.isMasterQuiz(), that.isRandomOrder(), that.isFinished(), that.getQuestionList(), that.getMasterQuizObject(), that.getCategory(), that.getTakenBy(), that.getCreatedBy());
     }
 }
