@@ -3,6 +3,7 @@ package hr.fer.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,26 +66,7 @@ public class UserService {
 	
 	private List<Quiz> getCompletedQuizzes(List<Quiz> quizzes) {
 		
-		List<Quiz> completedQuizzes = new ArrayList<>();
-		
-		for(Quiz quiz : quizzes) {
-			List<Question> questions = questionRepository.findAllByQuiz(quiz);
-			boolean quizCompleted = true;
-			for(Question question : questions) {
-				//If all answers are not selected, the question is not answered
-				List<Answer> answers = answerRepository.findAllByQuestion(question);
-				long answered = answers.stream().filter((a) -> a.isSelected()).count();
-				if(answered == 0) {
-					quizCompleted = false;
-					break;
-				}
-			}
-			if(quizCompleted) {
-				completedQuizzes.add(quiz);
-			}
-		}
-		
-		return completedQuizzes;
+		return quizzes.stream().filter(Quiz::isFinished).collect(Collectors.toList());
 	}
 	
 	private List<Double> getQuizScores(List<Quiz> completedQuizzes) {

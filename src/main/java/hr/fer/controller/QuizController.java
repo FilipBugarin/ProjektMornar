@@ -2,7 +2,7 @@ package hr.fer.controller;
 
 import hr.fer.entity.Quiz;
 import hr.fer.entity.QuizCategory;
-import hr.fer.entity.User;
+import hr.fer.requests_responses.MyQuizInfo;
 import hr.fer.requests_responses.QuizInfo;
 import hr.fer.requests_responses.SolvedQuizStats;
 import hr.fer.security.CurrentUser;
@@ -31,6 +31,11 @@ public class QuizController {
     @GetMapping
     public ResponseEntity<QuizInfo> getInfoForQuizPage(@RequestParam Long masterQuizId) {
         return ResponseEntity.ok(quizService.getQuizInfo(masterQuizId));
+    }
+    
+    @GetMapping("my-quiz/{id}")
+    public ResponseEntity<MyQuizInfo> getInfoForMyQuizPage(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(quizService.getMyQuizInfo(id));
     }
 
     @GetMapping("categories")
