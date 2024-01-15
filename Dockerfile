@@ -17,7 +17,7 @@ RUN chown -R vi_user:vi_group /app
 USER vi_user
 
 # Expose the port the app runs on
-EXPOSE 8080
+EXPOSE 8082
 
 # Run the application
 CMD ["java", "-jar", "app.jar"]
