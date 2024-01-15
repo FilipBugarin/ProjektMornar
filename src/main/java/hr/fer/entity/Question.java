@@ -23,15 +23,19 @@ public class Question {
 
     private String questionString;
     private boolean randomOrder;
+    
+    @JsonIgnore
+    private int position;
 
     @JsonIgnore
     @ManyToOne
     private Quiz quiz;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OrderBy("position ASC")
     private List<Answer> answerList;
 
     public Question(Question that){
-        this(that.getId(),that.getQuestionString(),that.isRandomOrder(),that.getQuiz(),that.getAnswerList());
+        this(that.getId(),that.getQuestionString(),that.isRandomOrder(), that.position, that.getQuiz(),that.getAnswerList());
     }
 }

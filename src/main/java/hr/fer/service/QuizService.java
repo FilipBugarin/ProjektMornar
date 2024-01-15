@@ -41,9 +41,14 @@ public class QuizService {
     public boolean createQuiz(Quiz quiz) {
         quiz.setMasterQuiz(true);
         quiz.setFinished(false);
+        
+        int i = 0;
         for (Question q : quiz.getQuestionList()) {
+        	q.setPosition(i++);
             q.setQuiz(quiz);
+            int j = 0;
             for (Answer a : q.getAnswerList()) {
+            	a.setPosition(j++);
                 a.setQuestion(q);
             }
         }
@@ -111,9 +116,13 @@ public class QuizService {
                 }
             }
 
+            int i = 0;
             for (Question q : quiz.getQuestionList()) {
+            	q.setPosition(i++);
                 q.setQuiz(existingQuiz);
+                int j = 0;
                 for (Answer a : q.getAnswerList()) {
+                	a.setPosition(j++);
                     a.setQuestion(q);
                 }
             }
@@ -128,6 +137,7 @@ public class QuizService {
             return false;
         }
     }
+    
 
     public List<Quiz> getQuizzesByuser(User user) {
         return quizRepository.findAllByTakenBy(user);

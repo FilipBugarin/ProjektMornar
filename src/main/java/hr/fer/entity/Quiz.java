@@ -29,6 +29,7 @@ public class Quiz {
     private boolean finished;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OrderBy("position ASC")
     private List<Question> questionList;
 
     @JsonIgnore

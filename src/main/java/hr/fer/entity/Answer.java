@@ -25,12 +25,15 @@ public class Answer {
     private boolean correct;
 
     private boolean selected;
+    
+    @JsonIgnore
+    private int position;
 
     @JsonIgnore
     @ManyToOne
     private Question question;
 
     public Answer(Answer that){
-        this(that.getId(), that.getAnswerText(), that.isCorrect(), that.isSelected(), that.getQuestion());
+        this(that.getId(), that.getAnswerText(), that.isCorrect(), that.isSelected(), that.position, that.getQuestion());
     }
 }
