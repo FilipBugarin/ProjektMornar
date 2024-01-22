@@ -5,6 +5,8 @@ import hr.fer.repository.AnswerRepository;
 import hr.fer.repository.QuestionRepository;
 import hr.fer.repository.QuizCategoryRepository;
 import hr.fer.repository.QuizRepository;
+import hr.fer.requests_responses.MyQuizInfo;
+import hr.fer.requests_responses.QuestionScore;
 import hr.fer.requests_responses.QuizInfo;
 import hr.fer.requests_responses.SolvedQuizQuestion;
 import hr.fer.requests_responses.SolvedQuizStats;
@@ -14,7 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -153,6 +158,7 @@ public class QuizService {
         List<SolvedQuizQuestion> solvedQuestions = new ArrayList<>();
 
         stats.setQuizName(quiz.getQuizName());
+        stats.setId(quiz.getId());
 
         //Calculate score and fill solvedQuestions list
         List<Question> questions = questionRepository.findAllByQuiz(quiz);
@@ -209,5 +215,61 @@ public class QuizService {
 
     public List<Quiz> getMasterQuizzesBySearchParam(String searchParam) {
         return quizRepository.searchMasterQuizzesByNameOrDescription(searchParam);
+    }
+    
+    public MyQuizInfo getMyQuizInfo(Long id) {
+    	Optional<Quiz> quizOpt = quizRepository.findById(id);
+        if (quizOpt.isEmpty()) return null;
+
+        Quiz quiz = quizOpt.get();
+        List<Question> masterQuestions = questionRepository.findAllByQuiz(quiz);
+        MyQuizInfo quizInfo = new MyQuizInfo();
+        quizInfo.setQuizName(quiz.getQuizName());
+        quizInfo.setQuizDescription(quiz.getDescription());
+        quizInfo.setNumOfAttempts(quizRepository.countQuizzesWithMasterCopy(id));
+        quizInfo.setNumOfFinished(quizRepository.countFinishedQuizzesWithMasterCopy(id));
+        
+        long numberOfPeopleTaken = quizRepository.getQuizzesFromMaster(id).stream().map(q -> q.getTakenBy().getId()).distinct().count();
+        quizInfo.setNumberOfPeopleAttempted(numberOfPeopleTaken);
+        
+        //Assumes every quiz solved has all the questions, and all questions are stored in the same order
+        List<Integer> correctPerQuestion = new ArrayList<>();
+        for(int i = 0; i < masterQuestions.size(); i++) {
+        	correctPerQuestion.add(0);
+        }
+        List<Quiz> solvedQuizzes = quizRepository.getQuizzesFromMaster(id);
+        
+        for(Quiz q : solvedQuizzes) {
+        	List<Question> questions = questionRepository.findAllByQuiz(q);
+        	for(int i = 0; i < questions.size(); i++) {
+        		List<Answer> answers = answerRepository.findAllByQuestion(questions.get(i));
+        		//All answers that are correct must be selected for the question to be correct
+                boolean correct = answers.stream().filter(Answer::isCorrect).allMatch(Answer::isSelected);
+                if (correct) {
+                	correctPerQuestion.set(i, correctPerQuestion.get(i) + 1);
+                }
+        	}
+        }
+        
+        //Set scores for questions
+        List<QuestionScore> scorePerQuestion = new ArrayList<>();
+        for(int i = 0; i < masterQuestions.size(); i++) {
+        	QuestionScore score = new QuestionScore();
+        	score.setTotal(solvedQuizzes.size());
+        	score.setCorrect(correctPerQuestion.get(i));
+        	score.setIncorrect(score.getTotal() - score.getCorrect());
+        	score.setScore(score.getCorrect() / (double) score.getTotal());
+        	score.setMasterQuestionId(masterQuestions.get(i).getId());
+        	score.setQuestionString(masterQuestions.get(i).getQuestionString());
+        	scorePerQuestion.add(score);
+        }
+        
+        Optional<QuestionScore> worstQuestion = scorePerQuestion.stream()
+                .min(Comparator.comparingDouble(score -> score.getScore()));
+        
+        quizInfo.setScorePerQuestion(scorePerQuestion);
+        quizInfo.setWorstQuestionAnswered(worstQuestion.isPresent() ? worstQuestion.get() : null);
+        
+        return quizInfo;
     }
 }

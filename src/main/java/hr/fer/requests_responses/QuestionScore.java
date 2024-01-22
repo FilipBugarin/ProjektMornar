@@ -1,7 +1,5 @@
 package hr.fer.requests_responses;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,9 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SolvedQuizStats {
-	private long id;
-	private String quizName;
+public class QuestionScore {
+	private String questionString;
+	private long masterQuestionId;
+	private int correct;
+	private int incorrect;
+	private int total;
 	private double score;
-	private List<SolvedQuizQuestion> questions;
 }
