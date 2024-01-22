@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SolvedQuizStats {
+	private long id;
 	private String quizName;
 	private double score;
 	private List<SolvedQuizQuestion> questions;

@@ -148,6 +148,7 @@ public class QuizService {
         List<SolvedQuizQuestion> solvedQuestions = new ArrayList<>();
 
         stats.setQuizName(quiz.getQuizName());
+        stats.setId(quiz.getId());
 
         //Calculate score and fill solvedQuestions list
         List<Question> questions = questionRepository.findAllByQuiz(quiz);
@@ -213,6 +214,9 @@ public class QuizService {
         quizInfo.setQuizDescription(quiz.getDescription());
         quizInfo.setNumOfAttempts(quizRepository.countQuizzesWithMasterCopy(id));
         quizInfo.setNumOfFinished(quizRepository.countFinishedQuizzesWithMasterCopy(id));
+        
+        long numberOfPeopleTaken = quizRepository.getQuizzesFromMaster(id).stream().map(q -> q.getTakenBy().getId()).distinct().count();
+        quizInfo.setNumberOfPeopleAttempted(numberOfPeopleTaken);
         
         //Assumes every quiz solved has all the questions, and all questions are stored in the same order
         List<Integer> correctPerQuestion = new ArrayList<>();

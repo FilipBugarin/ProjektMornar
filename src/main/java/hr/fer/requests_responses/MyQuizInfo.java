@@ -14,6 +14,7 @@ public class MyQuizInfo {
     private String quizDescription;
     private long numOfAttempts;
     private long numOfFinished;
+    private long numberOfPeopleAttempted;
 	private QuestionScore worstQuestionAnswered;
 	private List<QuestionScore> scorePerQuestion;
 }
