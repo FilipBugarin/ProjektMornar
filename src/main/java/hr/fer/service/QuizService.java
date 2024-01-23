@@ -154,6 +154,15 @@ public class QuizService {
             return false;
         }
     }
+
+    public void finishQuiz(Long id){
+        Optional<Quiz> quizOptional = quizRepository.findById(id);
+        if(quizOptional.isPresent()){
+            Quiz q = quizOptional.get();
+            q.setFinished(true);
+            quizRepository.save(q);
+        }
+    }
     
 
     public List<Quiz> getQuizzesByuser(User user) {
