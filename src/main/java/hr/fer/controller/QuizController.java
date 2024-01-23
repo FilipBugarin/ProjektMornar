@@ -84,17 +84,6 @@ public class QuizController {
         } else {
             return new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-    }
-
-    @PostMapping("submit")
-    public ResponseEntity<Void> submitQuiz(@RequestBody Quiz quiz, @CurrentUser UserPrincipal user) {
-        quiz.setTakenBy(userService.getUserById(user.getId()));
-        if (quizService.updateQuiz(quiz)) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
     @PostMapping("submit/answer")
