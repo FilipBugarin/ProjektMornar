@@ -239,6 +239,10 @@ public class QuizService {
     public List<Quiz> getMasterQuizzesBySearchParam(String searchParam) {
         return quizRepository.searchMasterQuizzesByNameOrDescription(searchParam);
     }
+
+    public List<Quiz> getMasterQuizzesWithCategoryBySearchParam(String searchParam, String category) {
+        return quizRepository.searchMasterQuizzesWithCategoryByNameOrDescription(searchParam, category);
+    }
     
     public MyQuizInfo getMyQuizInfo(Long id) {
     	Optional<Quiz> quizOpt = quizRepository.findById(id);
