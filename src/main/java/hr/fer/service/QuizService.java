@@ -11,13 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,17 +57,39 @@ public class QuizService {
         newQuiz.setId(null);
         newQuiz.setMasterQuiz(false);
         newQuiz.setTakenBy(takenBy);
+        boolean randomQuestions = masterQuizToCopy.isRandomOrder();
+
         List<Question> newQuestionList = new ArrayList<>();
-        for (Question q : newQuiz.getQuestionList()) {
+        List<Question> originalQuestionList = newQuiz.getQuestionList();
+        if (randomQuestions) {
+            // Shuffle the order of questions randomly
+            Collections.shuffle(originalQuestionList);
+        }
+
+        int questionPosition = 0; // Starting position for questions
+        for (Question q : originalQuestionList) {
             Question newQ = new Question(q);
             newQ.setId(null);
             newQ.setQuiz(newQuiz);
+            newQ.setPosition(questionPosition++);
+            newQ.setMasterQuestion(q);
             newQuestionList.add(newQ);
+            boolean randomAnswers = q.isRandomOrder();
+
             List<Answer> newAnswerList = new ArrayList<>();
-            for (Answer a : q.getAnswerList()) {
+            List<Answer> originalAnswerList = q.getAnswerList();
+            if (randomAnswers) {
+                // Shuffle the order of answers randomly
+                Collections.shuffle(originalAnswerList);
+            }
+
+            int answerPosition = 0; // Starting position for answers
+            for (Answer a : originalAnswerList) {
                 Answer newA = new Answer(a);
                 newA.setId(null);
                 newA.setQuestion(newQ);
+                newA.setPosition(answerPosition++);
+                newA.setMasterAnswer(a);
                 newAnswerList.add(newA);
             }
             newQ.setAnswerList(newAnswerList);
@@ -262,10 +278,10 @@ public class QuizService {
         }
         
         Optional<QuestionScore> worstQuestion = scorePerQuestion.stream()
-                .min(Comparator.comparingDouble(score -> score.getScore()));
+                .min(Comparator.comparingDouble(QuestionScore::getScore));
         
         quizInfo.setScorePerQuestion(scorePerQuestion);
-        quizInfo.setWorstQuestionAnswered(worstQuestion.isPresent() ? worstQuestion.get() : null);
+        quizInfo.setWorstQuestionAnswered(worstQuestion.orElse(null));
         
         return quizInfo;
     }

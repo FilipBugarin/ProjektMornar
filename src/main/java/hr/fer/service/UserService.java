@@ -39,7 +39,7 @@ public class UserService {
 		
 		Optional<User> optUser = userRepository.findById(id);
 		
-		if(!optUser.isPresent()) {
+		if(optUser.isEmpty()) {
 			return null;
 		}
 		
@@ -79,7 +79,7 @@ public class UserService {
 			for(Question question : questions) {
 				List<Answer> answers = answerRepository.findAllByQuestion(question);
 				//All answers that are correct must be selected for the question to be correct
-				boolean correct = answers.stream().filter((a) -> a.isCorrect()).allMatch((a) -> a.isSelected());
+				boolean correct = answers.stream().filter(Answer::isCorrect).allMatch(Answer::isSelected);
 				if(correct) correctQuestions++;
 			}
 			double score = correctQuestions / questions.size();

@@ -33,7 +33,11 @@ public class Answer {
     @ManyToOne
     private Question question;
 
+    @JsonIgnore
+    @ManyToOne
+    private Answer masterAnswer;
+
     public Answer(Answer that){
-        this(that.getId(), that.getAnswerText(), that.isCorrect(), that.isSelected(), that.position, that.getQuestion());
+        this(that.getId(), that.getAnswerText(), that.isCorrect(), that.isSelected(), that.position, that.getQuestion(), that.getMasterAnswer());
     }
 }
