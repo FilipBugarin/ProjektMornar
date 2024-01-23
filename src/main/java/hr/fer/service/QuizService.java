@@ -5,11 +5,7 @@ import hr.fer.repository.AnswerRepository;
 import hr.fer.repository.QuestionRepository;
 import hr.fer.repository.QuizCategoryRepository;
 import hr.fer.repository.QuizRepository;
-import hr.fer.requests_responses.MyQuizInfo;
-import hr.fer.requests_responses.QuestionScore;
-import hr.fer.requests_responses.QuizInfo;
-import hr.fer.requests_responses.SolvedQuizQuestion;
-import hr.fer.requests_responses.SolvedQuizStats;
+import hr.fer.requests_responses.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -61,7 +57,7 @@ public class QuizService {
         return savedQuiz.getId() != null;
     }
 
-    public Quiz createQuizCopy(Long masterQuizId, User takenBy) {
+    public Long createQuizCopy(Long masterQuizId, User takenBy) {
         Quiz masterQuizToCopy = quizRepository.getById(masterQuizId);
         Quiz newQuiz = new Quiz(masterQuizToCopy);
         newQuiz.setId(null);
@@ -84,7 +80,7 @@ public class QuizService {
         }
         newQuiz.setQuestionList(newQuestionList);
         newQuiz.setMasterQuizObject(masterQuizToCopy);
-        return quizRepository.save(newQuiz);
+        return quizRepository.save(newQuiz).getId();
     }
 
     public boolean updateQuiz(Quiz quiz) {
@@ -272,5 +268,21 @@ public class QuizService {
         quizInfo.setWorstQuestionAnswered(worstQuestion.isPresent() ? worstQuestion.get() : null);
         
         return quizInfo;
+    }
+
+    public boolean updateQuizAnswer(BasicIdObject idObject) {
+        Optional<Answer> answerOptional = answerRepository.findById(idObject.getId());
+        if(answerOptional.isPresent()){
+            Answer a = answerOptional.get();
+            a.setSelected(true);
+            answerRepository.save(a);
+            return true;
+        }
+        return false;
+    }
+
+    public Quiz getQuizById(Long quizId) {
+        Optional<Quiz> q = quizRepository.findById(quizId);
+        return q.orElse(null);
     }
 }

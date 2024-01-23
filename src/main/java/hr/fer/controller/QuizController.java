@@ -2,6 +2,7 @@ package hr.fer.controller;
 
 import hr.fer.entity.Quiz;
 import hr.fer.entity.QuizCategory;
+import hr.fer.requests_responses.BasicIdObject;
 import hr.fer.requests_responses.MyQuizInfo;
 import hr.fer.requests_responses.QuizInfo;
 import hr.fer.requests_responses.SolvedQuizStats;
@@ -70,7 +71,7 @@ public class QuizController {
     }
 
     @PostMapping("create/copy")
-    public ResponseEntity<Quiz> createQuizCopy(@RequestParam Long masterQuizId, @CurrentUser UserPrincipal user) {
+    public ResponseEntity<Long> createQuizCopy(@RequestParam Long masterQuizId, @CurrentUser UserPrincipal user) {
         return ResponseEntity.ok(quizService.createQuizCopy(masterQuizId, userService.getUserById(user.getId())));
     }
 
@@ -95,6 +96,21 @@ public class QuizController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("submit/answer")
+    public ResponseEntity<Void> submitAnswer(@RequestBody BasicIdObject idObject){
+        if (quizService.updateQuizAnswer(idObject)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("by/id")
+    public ResponseEntity<Quiz> getQuizById(@RequestParam Long quizId){
+        return ResponseEntity.ok(quizService.getQuizById(quizId));
+    }
+
 
     @GetMapping("taken/by/user")
     public ResponseEntity<List<Quiz>> getPersonsQuizes(@CurrentUser UserPrincipal user) {
