@@ -25,6 +25,7 @@ public class Quiz {
 
     private String quizName;
     private boolean privateQuiz;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private boolean masterQuiz;
     private boolean randomOrder;
