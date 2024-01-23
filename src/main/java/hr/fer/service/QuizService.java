@@ -109,6 +109,7 @@ public class QuizService {
             existingQuiz.setPrivateQuiz(quiz.isPrivateQuiz());
             existingQuiz.setQuestionList(quiz.getQuestionList());
             existingQuiz.setFinished(quiz.isFinished());
+            existingQuiz.setCategory(quiz.getCategory());
 
             //Delete questions or answers that no longer belong
             List<Question> oldQuestions = questionRepository.findAllByQuiz(existingQuiz);
