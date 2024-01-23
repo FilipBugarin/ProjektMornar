@@ -23,8 +23,7 @@ public class Question {
 
     private String questionString;
     private boolean randomOrder;
-    
-    @JsonIgnore
+
     private int position;
 
     @JsonIgnore

@@ -25,8 +25,7 @@ public class Answer {
     private boolean correct;
 
     private boolean selected;
-    
-    @JsonIgnore
+
     private int position;
 
     @JsonIgnore
