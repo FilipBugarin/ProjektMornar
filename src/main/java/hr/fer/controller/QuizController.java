@@ -88,9 +88,14 @@ public class QuizController {
     }
 
     @PostMapping("submit")
-    public ResponseEntity<Void> submitQuiz(@RequestBody BasicIdObject basicIdObject) {
+    public ResponseEntity<SolvedQuizStats> submitQuiz(@RequestBody BasicIdObject basicIdObject) {
         quizService.finishQuiz(basicIdObject.getId());
-        return new ResponseEntity<>(HttpStatus.OK);
+        SolvedQuizStats stats = quizService.getSolvedQuizStats(basicIdObject.getId());
+        if (stats != null) {
+            return new ResponseEntity<>(stats, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("submit/answer")
