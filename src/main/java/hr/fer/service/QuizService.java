@@ -205,6 +205,7 @@ public class QuizService {
             quizInfo.setQuizName(q.getQuizName());
             quizInfo.setQuizDescription(q.getDescription());
             quizInfo.setCreatedBy(q.getCreatedBy());
+            quizInfo.setQuizCategory(q.getCategory());
             quizInfo.setNumOfAttempts(quizRepository.countQuizzesWithMasterCopy(masterQuizId));
             quizInfo.setNumOfFinished(quizRepository.countFinishedQuizzesWithMasterCopy(masterQuizId));
             return quizInfo;
