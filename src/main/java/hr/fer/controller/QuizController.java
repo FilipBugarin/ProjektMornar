@@ -2,10 +2,7 @@ package hr.fer.controller;
 
 import hr.fer.entity.Quiz;
 import hr.fer.entity.QuizCategory;
-import hr.fer.requests_responses.BasicIdObject;
-import hr.fer.requests_responses.MyQuizInfo;
-import hr.fer.requests_responses.QuizInfo;
-import hr.fer.requests_responses.SolvedQuizStats;
+import hr.fer.requests_responses.*;
 import hr.fer.security.CurrentUser;
 import hr.fer.security.CustomUserDetailsService;
 import hr.fer.security.UserPrincipal;
@@ -112,8 +109,17 @@ public class QuizController {
     }
 
     @GetMapping("by/id")
-    public ResponseEntity<Quiz> getQuizById(@RequestParam Long quizId){
-        return ResponseEntity.ok(quizService.getQuizById(quizId));
+    public ResponseEntity<QuizWithMasterQuizId> getQuizById(@RequestParam Long quizId){
+        Quiz q = quizService.getQuizById(quizId);
+        Long masterQuizId = null;
+        if(q.getMasterQuizObject() != null){
+            masterQuizId = q.getMasterQuizObject().getId();
+        }
+        QuizWithMasterQuizId response = QuizWithMasterQuizId.builder()
+                .quiz(q)
+                .masterQuizId(masterQuizId)
+                .build();
+        return ResponseEntity.ok(response);
     }
 
 
