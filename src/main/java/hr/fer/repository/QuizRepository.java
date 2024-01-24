@@ -31,4 +31,7 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
     @Query("SELECT q FROM Quiz q WHERE q.masterQuiz = true AND q.category.id = :categoryId AND (LOWER(q.quizName) LIKE LOWER(CONCAT('%', :term, '%')) OR LOWER(q.description) LIKE LOWER(CONCAT('%', :term, '%')))")
     List<Quiz> searchMasterQuizzesWithCategoryByNameOrDescription(@Param("term") String term, @Param("category") Long categoryId);
 
+    @Query("SELECT q FROM Quiz q WHERE q.masterQuiz = true AND q.createdBy.id = :userId")
+    List<Quiz> getMasterQuizzesCreatedByUser(@Param("userId") Long userId);
+
 }

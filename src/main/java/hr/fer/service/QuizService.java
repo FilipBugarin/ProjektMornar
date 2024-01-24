@@ -172,6 +172,10 @@ public class QuizService {
         return quizRepository.findAllByTakenBy(user);
     }
 
+    public List<Quiz> getMasterQuizzesByUser(User user) {
+        return quizRepository.getMasterQuizzesCreatedByUser(user.getId());
+    }
+
     public SolvedQuizStats getSolvedQuizStats(Long id) {
 
         Optional<Quiz> quizOpt = quizRepository.findById(id);

@@ -128,6 +128,11 @@ public class QuizController {
         return new ResponseEntity<>(quizService.getQuizzesByuser(userService.getUserById(user.getId())), HttpStatus.OK);
     }
 
+    @GetMapping("created/by/user")
+    public ResponseEntity<List<Quiz>> getPersonsMasterQuizzes(@CurrentUser UserPrincipal user) {
+        return new ResponseEntity<>(quizService.getMasterQuizzesByUser(userService.getUserById(user.getId())), HttpStatus.OK);
+    }
+
     @GetMapping("solved/{id}")
     public ResponseEntity<SolvedQuizStats> getSolvedQuizStats(@PathVariable("id") Long id) {
         SolvedQuizStats stats = quizService.getSolvedQuizStats(id);
