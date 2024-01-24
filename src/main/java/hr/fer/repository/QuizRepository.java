@@ -36,4 +36,7 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
     @Query("SELECT q.masterQuizObject.id, COUNT(*) FROM Quiz q WHERE q.masterQuiz = false AND q.finished = true GROUP BY q.masterQuizObject.id")
     List<Object[]> getMasterQuizzesWithCount();
 
+    @Query("SELECT q FROM Quiz q WHERE q.masterQuiz = false AND q.finished = true AND q.takenBy.id = :userId AND (q.masterQuizObject.id, q.finishedTime) IN (SELECT q1.masterQuizObject.id, MAX(q1.finishedTime) FROM Quiz q1 WHERE q1.masterQuiz = false AND q1.finished = true AND q.takenBy.id = :userId GROUP BY q1.masterQuizObject.id)")
+    List<Quiz> getLastThreeMasterQuizzes(@Param("userId") Long userId);
+
 }

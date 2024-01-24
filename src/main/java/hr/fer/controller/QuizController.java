@@ -143,4 +143,9 @@ public class QuizController {
     public ResponseEntity<List<Quiz>> getTopThreeMasterQuizzes() {
         return ResponseEntity.ok(quizService.getTopThreeMasterQuizzes());
     }
+
+    @GetMapping("last-three")
+    public ResponseEntity<List<Quiz>> getLastThreeMasterQuizzes(@CurrentUser UserPrincipal user) {
+        return ResponseEntity.ok(quizService.getLastThreeMasterQuizzes(user.getId()));
+    }
 }

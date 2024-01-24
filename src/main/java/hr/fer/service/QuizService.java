@@ -435,4 +435,20 @@ public class QuizService {
 
         return quizList;
     }
+
+    public List<Quiz> getLastThreeMasterQuizzes(Long userId) {
+        List<Quiz> quizList = quizRepository.getLastThreeMasterQuizzes(userId).stream()
+                .sorted(Comparator.comparing(Quiz::getFinishedTime).reversed())
+                .limit(3)
+                .toList();
+
+        List<Quiz> masterQuizList = new ArrayList<>();
+
+        quizList.forEach((q) -> {
+                    Optional<Quiz> quiz = quizRepository.findById(q.getMasterQuizObject().getId());
+                    quiz.ifPresent(masterQuizList::add);
+                });
+
+        return masterQuizList;
+    }
 }
