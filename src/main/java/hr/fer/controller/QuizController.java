@@ -62,13 +62,9 @@ public class QuizController {
     }
 
     @PostMapping("create")
-    public ResponseEntity<Boolean> createQuiz(@RequestBody Quiz quiz, @CurrentUser UserPrincipal user) {
+    public ResponseEntity<Long> createQuiz(@RequestBody Quiz quiz, @CurrentUser UserPrincipal user) {
         quiz.setCreatedBy(userService.getUserById(user.getId()));
-        if (quizService.createQuiz(quiz)) {
-            return ResponseEntity.ok(true);
-        } else {
-            return ResponseEntity.ok(false);
-        }
+        return ResponseEntity.ok(quizService.createQuiz(quiz));
     }
 
     @PostMapping("create/copy")

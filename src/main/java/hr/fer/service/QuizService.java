@@ -34,7 +34,7 @@ public class QuizService {
         return quizRepository.findAllByMasterQuiz(true);
     }
 
-    public boolean createQuiz(Quiz quiz) {
+    public Long createQuiz(Quiz quiz) {
         quiz.setMasterQuiz(true);
         quiz.setFinished(false);
         
@@ -49,7 +49,7 @@ public class QuizService {
             }
         }
         Quiz savedQuiz = quizRepository.save(quiz);
-        return savedQuiz.getId() != null;
+        return savedQuiz.getId();
     }
 
     public Long createQuizCopy(Long masterQuizId, User takenBy) {
