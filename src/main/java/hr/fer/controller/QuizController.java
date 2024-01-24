@@ -138,4 +138,9 @@ public class QuizController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("top-three")
+    public ResponseEntity<List<Quiz>> getTopThreeMasterQuizzes() {
+        return ResponseEntity.ok(quizService.getTopThreeMasterQuizzes());
+    }
 }

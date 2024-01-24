@@ -5,7 +5,6 @@ import hr.fer.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -33,5 +32,8 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
     @Query("SELECT q FROM Quiz q WHERE q.masterQuiz = true AND q.createdBy.id = :userId")
     List<Quiz> getMasterQuizzesCreatedByUser(@Param("userId") Long userId);
+
+    @Query("SELECT q.masterQuizObject.id, COUNT(*) FROM Quiz q WHERE q.masterQuiz = false AND q.finished = true GROUP BY q.masterQuizObject.id")
+    List<Object[]> getMasterQuizzesWithCount();
 
 }

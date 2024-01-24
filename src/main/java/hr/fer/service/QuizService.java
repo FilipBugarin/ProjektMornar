@@ -415,4 +415,24 @@ public class QuizService {
         Optional<Quiz> q = quizRepository.findById(quizId);
         return q.orElse(null);
     }
+
+    public List<Quiz> getTopThreeMasterQuizzes() {
+        List<Long> topThreeQuizIds = quizRepository.getMasterQuizzesWithCount()
+                .stream()
+                //object[0] has quiz id
+                //object[1] has number of copies of master quiz with id at object[0]
+                .sorted((Object[] arr1, Object[] arr2) -> Long.compare((Long) arr2[1], (Long) arr1[1]))
+                .limit(3)
+                .map(arr -> (Long) arr[0])
+                .toList();
+
+        List<Quiz> quizList = new ArrayList<>();
+
+        topThreeQuizIds.forEach((id) -> {
+            Optional<Quiz> quiz = quizRepository.findById(id);
+            quiz.ifPresent(quizList::add);
+        });
+
+        return quizList;
+    }
 }
