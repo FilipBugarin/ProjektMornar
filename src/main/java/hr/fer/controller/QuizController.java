@@ -28,9 +28,9 @@ public class QuizController {
 
 
     @GetMapping("search")
-    public ResponseEntity<List<Quiz>> getQuizListBySearchParam(@RequestParam String searchParam, @RequestParam(required = false) String category){
-        if(category != null) {
-            return ResponseEntity.ok(quizService.getMasterQuizzesWithCategoryBySearchParam(searchParam, category));
+    public ResponseEntity<List<Quiz>> getQuizListBySearchParam(@RequestParam String searchParam, @RequestParam(required = false) Long categoryId){
+        if(categoryId != null) {
+            return ResponseEntity.ok(quizService.getMasterQuizzesWithCategoryBySearchParam(searchParam, categoryId));
         } else {
             return ResponseEntity.ok(quizService.getMasterQuizzesBySearchParam(searchParam));
         }

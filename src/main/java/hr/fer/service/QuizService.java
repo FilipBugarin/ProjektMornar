@@ -336,8 +336,8 @@ public class QuizService {
         return quizRepository.searchMasterQuizzesByNameOrDescription(searchParam);
     }
 
-    public List<Quiz> getMasterQuizzesWithCategoryBySearchParam(String searchParam, String category) {
-        return quizRepository.searchMasterQuizzesWithCategoryByNameOrDescription(searchParam, category);
+    public List<Quiz> getMasterQuizzesWithCategoryBySearchParam(String searchParam, Long categoryId) {
+        return quizRepository.searchMasterQuizzesWithCategoryByNameOrDescription(searchParam, categoryId);
     }
     
     public MyQuizInfo getMyQuizInfo(Long id) {
