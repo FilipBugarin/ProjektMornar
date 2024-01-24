@@ -9,4 +9,5 @@ import hr.fer.entity.Quiz;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 	List<Question> findAllByQuiz(Quiz quiz);
+    List<Question> findAllByMasterQuestionId(Long id);
 }

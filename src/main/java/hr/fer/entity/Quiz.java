@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data
@@ -48,7 +47,9 @@ public class Quiz {
     @ManyToOne
     private User createdBy;
 
+    private Timestamp finishedTime;
+
     public Quiz(Quiz that) {
-        this(that.getId(), that.getQuizName(), that.isPrivateQuiz(), that.getDescription(), that.isMasterQuiz(), that.isRandomOrder(), that.isFinished(), that.getQuestionList(), that.getMasterQuizObject(), that.getCategory(), that.getTakenBy(), that.getCreatedBy());
+        this(that.getId(), that.getQuizName(), that.isPrivateQuiz(), that.getDescription(), that.isMasterQuiz(), that.isRandomOrder(), that.isFinished(), that.getQuestionList(), that.getMasterQuizObject(), that.getCategory(), that.getTakenBy(), that.getCreatedBy(), that.getFinishedTime());
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -161,6 +162,7 @@ public class QuizService {
         if(quizOptional.isPresent()){
             Quiz q = quizOptional.get();
             q.setFinished(true);
+            q.setFinishedTime(new Timestamp(System.currentTimeMillis()));
             quizRepository.save(q);
         }
     }
@@ -219,7 +221,7 @@ public class QuizService {
         return true;
     }
 
-    public QuizInfo getQuizInfo(Long masterQuizId) {
+    public QuizInfo getQuizInfo(Long masterQuizId, Long userId) {
         Optional<Quiz> optQuiz = quizRepository.findById(masterQuizId);
         if (optQuiz.isPresent()) {
             Quiz q = optQuiz.get();
@@ -230,6 +232,100 @@ public class QuizService {
             quizInfo.setQuizCategory(q.getCategory());
             quizInfo.setNumOfAttempts(quizRepository.countQuizzesWithMasterCopy(masterQuizId));
             quizInfo.setNumOfFinished(quizRepository.countFinishedQuizzesWithMasterCopy(masterQuizId));
+
+            List<Quiz> previousAttempts = quizRepository.findALlByMasterQuizObjectId(masterQuizId);
+            if(!q.getCreatedBy().getId().equals(userId)){
+                previousAttempts = previousAttempts.stream().filter(quiz -> quiz.getTakenBy().getId().equals(userId)).collect(Collectors.toList());
+            }
+            List<PreviousAttemptQuiz> previousAttemptQuizs = new ArrayList<>();
+
+            for(Quiz qp:previousAttempts){
+
+                long numOfCorrect = qp.getQuestionList().stream()
+                        .flatMap(question -> question.getAnswerList().stream())
+                        .filter(answer -> answer.isSelected() && answer.isCorrect())
+                        .count();
+
+                long numOfIncorrect = qp.getQuestionList().stream()
+                        .flatMap(question -> question.getAnswerList().stream())
+                        .filter(answer -> answer.isSelected() && !answer.isCorrect())
+                        .count();
+
+                long numberOfQuestions = qp.getQuestionList().size();
+                double percentage = Math.round((double) numOfCorrect /numberOfQuestions * 10000.0) / 100.0;
+
+
+                PreviousAttemptQuiz paq = PreviousAttemptQuiz.builder()
+                        .quizId(qp.getId())
+                        .isFinished(qp.isFinished())
+                        .finishedTime(qp.getFinishedTime())
+                        .numbOfCorrect(Math.toIntExact(numOfCorrect))
+                        .numbOfIncorrect(Math.toIntExact(numOfIncorrect))
+                        .percentageCorrect(percentage + "%")
+                        .build();
+                previousAttemptQuizs.add(paq);
+            }
+
+            quizInfo.setPreviousAttempts(previousAttemptQuizs);
+
+            if(q.getCreatedBy().getId().equals(userId)){
+
+                Set<Long> numberOfPeopleAttemptingQuizSet = previousAttempts.stream()
+                        .map(Quiz::getTakenBy)
+                        .map(User::getId)
+                        .collect(Collectors.toSet());
+
+                Integer numberOfPeopleAttemptingQuiz = numberOfPeopleAttemptingQuizSet.size();
+
+
+                List<QuestionSolveStatistics> questionSolveStatisticsList = new ArrayList<>();
+                List<Question> masterQuestions = q.getQuestionList();
+                Integer maxIncorrectQuestionAnswers = 0;
+                Question maxInccorectQuestion = null;
+                for (Question masterQuestion : masterQuestions) {
+
+                    List<Question> questions = questionRepository.findAllByMasterQuestionId(masterQuestion.getId());
+
+                    Integer numberOfCorrect = 0;
+                    Integer numberOfIncorrect = 0;
+                    for (Question question : questions) {
+                        for (Answer answer : question.getAnswerList()) {
+                            if(answer.isSelected() && answer.isCorrect()){
+                                numberOfCorrect++;
+                            } else if(answer.isSelected()){
+                                numberOfIncorrect++;
+                            }
+                        }
+                    }
+
+                    if(numberOfIncorrect>=maxIncorrectQuestionAnswers){
+                        maxIncorrectQuestionAnswers = numberOfIncorrect;
+                        maxInccorectQuestion = masterQuestion;
+                    }
+
+                    QuestionSolveStatistics questionSolveStatistics = QuestionSolveStatistics.builder()
+                            .question(masterQuestion)
+                            .numbOfCorrect(numberOfCorrect)
+                            .numbOfIncorrect(numberOfIncorrect)
+                            .build();
+                    questionSolveStatisticsList.add(questionSolveStatistics);
+                }
+
+                MostFailedQuestion mostFailedQuestion = MostFailedQuestion.builder()
+                        .question(maxInccorectQuestion)
+                        .numberOfIncorrectAnswers(maxIncorrectQuestionAnswers)
+                        .build();
+
+                QuizOwnerStatistics quizOwnerStatistics = QuizOwnerStatistics.builder()
+                        .numberOfQuizAttempts(previousAttempts.size())
+                        .numberOfPeopleAttemptingQuiz(numberOfPeopleAttemptingQuiz)
+                        .questionSolveStatistics(questionSolveStatisticsList)
+                        .questionThatpeopleFailedTheMost(mostFailedQuestion)
+                        .build();
+                quizInfo.setQuizOwnerStatistics(quizOwnerStatistics);
+            }
+
+
             return quizInfo;
         } else {
             return null;

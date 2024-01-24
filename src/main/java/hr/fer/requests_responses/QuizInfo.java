@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,4 +18,6 @@ public class QuizInfo {
     private User createdBy;
     private long numOfAttempts;
     private long numOfFinished;
+    private List<PreviousAttemptQuiz> previousAttempts;
+    private QuizOwnerStatistics quizOwnerStatistics;
 }

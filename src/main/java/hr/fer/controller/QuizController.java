@@ -40,8 +40,8 @@ public class QuizController {
     }
 
     @GetMapping
-    public ResponseEntity<QuizInfo> getInfoForQuizPage(@RequestParam Long masterQuizId) {
-        return ResponseEntity.ok(quizService.getQuizInfo(masterQuizId));
+    public ResponseEntity<QuizInfo> getInfoForQuizPage(@RequestParam Long masterQuizId, @CurrentUser UserPrincipal user) {
+        return ResponseEntity.ok(quizService.getQuizInfo(masterQuizId, user.getId()));
     }
     
     @GetMapping("my-quiz/{id}")

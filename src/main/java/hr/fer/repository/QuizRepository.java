@@ -14,6 +14,8 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
     List<Quiz> findAllByCreatedBy(User user);
     List<Quiz> findAllByTakenBy(User user);
 
+    List<Quiz> findALlByMasterQuizObjectId(Long masterQuizId);
+
     @Query("SELECT COUNT(q) FROM Quiz q WHERE q.masterQuizObject IS NOT NULL AND q.masterQuizObject.id = :quizId")
     long countQuizzesWithMasterCopy(@Param("quizId") Long quizId);
 
