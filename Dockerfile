@@ -1,5 +1,5 @@
 # Use the official OpenJDK image as the base image
-FROM openjdk:17
+FROM openjdk:16
 
 # Create a group and user
 RUN groupadd -r vi_group && useradd -r -g vi_group vi_user
