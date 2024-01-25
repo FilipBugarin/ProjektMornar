@@ -53,6 +53,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         httpServletResponse.setHeader("Referrer-Policy", "no-referrer");
 
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request, httpServletResponse);
     }
 }
