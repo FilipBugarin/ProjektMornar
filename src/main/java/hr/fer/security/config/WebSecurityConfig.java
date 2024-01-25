@@ -64,6 +64,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         log.debug("Jesam krenuo");
         http
+                .cors()
+                    .disable()
                 .csrf()
                     .disable()
                 .authorizeRequests()
