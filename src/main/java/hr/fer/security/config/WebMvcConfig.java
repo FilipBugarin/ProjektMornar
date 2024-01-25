@@ -6,14 +6,15 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebMvcConfig implements WebMvcConfigurer {
+public class WebMvcConfig {
 
+    // REMOVE THIS
     private final long MAX_AGE_SECS = 36000;
 
     @Value("${app.cors.allowedOrigins}")
     private String[] allowedOrigins;
 
-    @Override
+    //@Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("*")
