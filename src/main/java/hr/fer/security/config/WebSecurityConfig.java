@@ -61,14 +61,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors().configurationSource(request -> {
-                    CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowCredentials(true);
-                    config.addAllowedOrigin("*"); // Allow all origins
-                    config.addAllowedHeader("*"); // Allow all headers
-                    config.addAllowedMethod("*"); // Allow all methods
-                    return config;
-                }).and()
+                .cors()
+                    .and()
                 .exceptionHandling()
                     .authenticationEntryPoint(unauthorizedHandler)
                     .and()

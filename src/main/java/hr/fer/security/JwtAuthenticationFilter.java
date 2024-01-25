@@ -50,6 +50,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception ex) {
             logger.error("Could not set user authentication in security context", ex);
         }
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        httpServletResponse.setHeader("Referrer-Policy", "no-referrer");
 
         filterChain.doFilter(request, response);
     }
