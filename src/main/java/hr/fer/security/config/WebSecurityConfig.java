@@ -4,6 +4,7 @@ package hr.fer.security.config;
 import hr.fer.security.CustomUserDetailsService;
 import hr.fer.security.JwtAuthenticationEntryPoint;
 import hr.fer.security.JwtAuthenticationFilter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +19,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.web.cors.CorsConfiguration;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
@@ -59,26 +62,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        log.debug("Jesam krenuo");
         http
                 .cors()
-                    .and()
+                    .disable()
                 .csrf()
                     .disable()
-                .exceptionHandling()
-                    .authenticationEntryPoint(unauthorizedHandler)
-                    .and()
-                .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
                 .authorizeRequests()
-                    .antMatchers("/")
-                        .permitAll()
-                    .antMatchers("/api/auth/**")
-                        .permitAll()
-                    .antMatchers("/api/user/checkUsernameAvailability", "/api/user/checkEmailAvailability")
-                        .permitAll()
-                    .anyRequest()
-                        .authenticated();
+                    .antMatchers("/**")
+                        .permitAll();
 
         // Add our custom JWT security filter
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
