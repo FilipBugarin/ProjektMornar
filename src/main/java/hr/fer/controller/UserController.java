@@ -28,6 +28,9 @@ public class UserController {
 
 	@GetMapping("getMe")
 	public ResponseEntity<User> getMe(@CurrentUser UserPrincipal user){
+		if(user== null){
+			return ResponseEntity.ok(null);
+		}
 		return ResponseEntity.ok(customUserDetailsService.getUserById(user.getId()));
 	}
 	
