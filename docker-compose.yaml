@@ -10,7 +10,7 @@ services:
       - "127:0.0.1:8082:50002"
     environment:
       LOGGING_LEVEL_ORG_HIBERNATE.SQL: DEBUG
-      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-ckqk001rfc9c7399naeg-a.frankfurt-postgres.render.com/projektmornar
-      SPRING_DATASOURCE_USERNAME: projektmornar_user
-      SPRING_DATASOURCE_PASSWORD: TcpsQ16EO3aBYwXzJnWEFd0ffiHw7SCx
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-cmn4l9md3nmc73f65s0g-a.frankfurt-postgres.render.com:5432/mornar2
+      SPRING_DATASOURCE_USERNAME: mornar2_user
+      SPRING_DATASOURCE_PASSWORD: egWTQR4hwi9hzVCdpgbjMQZtinABsTX7
 
