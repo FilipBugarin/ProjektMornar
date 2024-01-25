@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "127:0.0.1:8082:50002"
+      - "127:0.0.1:8082:8082"
     environment:
       LOGGING_LEVEL_ORG_HIBERNATE.SQL: DEBUG
       SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-cmn4l9md3nmc73f65s0g-a.frankfurt-postgres.render.com:5432/mornar2
